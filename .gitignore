@@ -6,3 +6,5 @@ run.sh
 run2.sh
 first_half.csv
 second_half.csv
+first_half_out.csv
+second_half_out.csv
