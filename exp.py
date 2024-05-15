@@ -1,7 +1,7 @@
 import pandas as pd
 import json
 
-def gen_knowledge_prompting(llama,content, desc, bugfix):
+def gen_knowledge_prompting(llm,content, desc, bugfix):
     fewshot_prompt_string= """Input:
          extent+=image->columns*sizeof(uint32);
  #endif
@@ -50,7 +50,7 @@ Following the same format above from the examples, generate knowledge for the fo
         history.append({"role":"system", "content":"Your job is to generate knowledge for a given input"})
         history.append({"role":"user", "content":fewshot_prompt_string+content})
 
-        result, history = llama.run_llama(history)
+        result, history = llm.run(history)
         summaries.append(result)
     max_ans = ""
     max_score = 0
@@ -61,7 +61,7 @@ Following the same format above from the examples, generate knowledge for the fo
             history = []
             history.append({"role":"system", "content":"Using the knowledge provided, answer the question given"})
             history.append({"role":"user", "content":"Question: Is this hunk fixing a bug with the description:\n"+desc+"\nHunk:\n"+content+"\nKnowledge:"+summaries[i]+"\nPlease answer yes or no and provide a confidence score on a scale of 0 to 1 be realistic and you have to provide one. Do not provide any more information. DO NOT EXPLAIN. Provide answer in this format {\"ans\":\"<Answer>\", \"conf\":\"<Confidence score>\"}"})
-            result, history = llama.run_llama(history)
+            result, history = llm.run(history)
             try:
                 result_json = json.loads(result)
                 score = float(result_json["conf"])
@@ -86,7 +86,7 @@ Following the same format above from the examples, generate knowledge for the fo
     #thing2.to_csv("thing21.csv")
     return pred, summaries[max_summary], max_score
 
-def sep_gen_knowledge_prompting(llama, content, desc, bugfix):
+def sep_gen_knowledge_prompting(llm, content, desc, bugfix):
     #thing = pd.read_csv("first_half.csv")
     rows = []
     header = ["content", "desc", "label", "chosen_summary", "pred"]
@@ -135,7 +135,7 @@ def sep_gen_knowledge_prompting(llama, content, desc, bugfix):
 """})
         history.append({"role":"user", "content":"Input: \n"+content})
 
-        result, history = llama.run_llama(history)
+        result, history = llm.run(history)
         summaries.append(result)
     max_ans = ""
     max_score = 0
@@ -146,7 +146,7 @@ def sep_gen_knowledge_prompting(llama, content, desc, bugfix):
             history = []
             history.append({"role":"system", "content":"Using the knowledge provided, answer the question given"})
             history.append({"role":"user", "content":"Question: Is this hunk fixing a bug with the description:\n"+desc+"\nHunk:\n"+content+"\nKnowledge:"+summaries[i]+"\nPlease answer yes or no and provide a confidence score on a scale of 0 to 1 be realistic and you have to provide one. Do not provide any more information. DO NOT EXPLAIN. Provide answer in this format {\"ans\":\"<Answer>\", \"conf\":\"<Confidence score>\"}"})
-            result, history = llama.run_llama(history)
+            result, history = llm.run(history)
             try:
                 result_json = json.loads(result)
                 score = float(result_json["conf"])
@@ -173,7 +173,7 @@ def sep_gen_knowledge_prompting(llama, content, desc, bugfix):
 
 
 
-def baseline_prompting(llama, content, desc, bugfix):
+def baseline_prompting(llm, content, desc, bugfix):
     fewshot_prompt_string = "The code hunks provided are from a larger commit for a bugfix. Not every hunk contains the actual bugfix. Does the following code hunk contain a bugfix:"
     thing = pd.read_csv("first_half.csv")
     rows = []
@@ -189,7 +189,7 @@ def baseline_prompting(llama, content, desc, bugfix):
     while flag!=3:
         history=[]
         history.append({"role":"user", "content":fewshot_prompt_string+"\n"+content+"\nPlease answer yes or no. Do not provide any more information. DO NOT EXPLAIN. Provide answer in this format {\"ans\":\"<Answer>\"}"})
-        result, history = llama.run_llama(history)
+        result, history = llm.run(history)
         try:
             result_json = json.loads(result)
             answer = result_json["ans"].lower()
