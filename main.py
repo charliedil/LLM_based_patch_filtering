@@ -5,8 +5,8 @@ import sys
 import pandas as pd
 def main():
     print(sys.argv)
-    if len(sys.argv) != 6:
-        print("Please provide 5 arguments: node port inputfile outputfile prompt model")
+    if len(sys.argv) != 7:
+        print("Please provide 6 arguments: node port inputfile outputfile prompt model")
         print("prompt options: baseline, gen_know")
         exit()
     node = sys.argv[1]
