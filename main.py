@@ -34,8 +34,14 @@ def main():
             rows.append([content, bugfix, pred])
         elif prompt=="gen_know":
             header = ["content", "label", "pred", "summary", "score"]
-            pred, summary, score =sep_gen_knowledge_prompting(llm, content, desc, bugfix)
-            rows.append([content, bugfix, pred, summary, score])
+            try: 
+                pred, summary, score =sep_gen_knowledge_prompting(llm, content, desc, bugfix)
+                rows.append([content, bugfix, pred, summary, score])
+            except:
+                thing2 = pd.DataFrame(rows, columns=header)
+                thing2.to_csv(out)
+                exit()
+
 
     thing2 = pd.DataFrame(rows, columns=header)
     thing2.to_csv(out)

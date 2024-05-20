@@ -9,7 +9,7 @@ class gpt:
     
         headers={"Content-Type": "application/json", "Authorization": "Bearer "+ api_keys.get_gpt_key()}
         data = {
-            "model":"gpt-4",
+            "model":"gpt-4o",
             "messages":history
             # all possible request body params here: https://platform.openai.com/docs/api-reference/chat/create
         }

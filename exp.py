@@ -134,7 +134,7 @@ def sep_gen_knowledge_prompting(llm, content, desc, bugfix):
         This hunk adds a check to verify that the port entered is a number, and if it is not it throws an error. This change fixes how the use of the child_process exec function was used without input sanitization, which lets attackers execute arbritrary commands as the provided port.
 """})
         history.append({"role":"user", "content":"Input: \n"+content})
-
+        print("HISTORY:",str(history))
         result, history = llm.run(history)
         summaries.append(result)
     max_ans = ""
@@ -146,6 +146,7 @@ def sep_gen_knowledge_prompting(llm, content, desc, bugfix):
             history = []
             history.append({"role":"system", "content":"Using the knowledge provided, answer the question given"})
             history.append({"role":"user", "content":"Question: Is this hunk fixing a bug with the description:\n"+desc+"\nHunk:\n"+content+"\nKnowledge:"+summaries[i]+"\nPlease answer yes or no and provide a confidence score on a scale of 0 to 1 be realistic and you have to provide one. Do not provide any more information. DO NOT EXPLAIN. Provide answer in this format {\"ans\":\"<Answer>\", \"conf\":\"<Confidence score>\"}"})
+            print("HISTORY:",str(history))
             result, history = llm.run(history)
             try:
                 result_json = json.loads(result)
