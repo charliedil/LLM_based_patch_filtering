@@ -2,8 +2,10 @@ __pycache__
 thing.csv
 output.log
 output2.log
+output3.log
 run.sh
 run2.sh
+run3.sh
 first_half.csv
 second_half.csv
 first_half_out.csv

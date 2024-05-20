@@ -10,7 +10,8 @@ class gpt:
         headers={"Content-Type": "application/json", "Authorization": "Bearer "+ api_keys.get_gpt_key()}
         data = {
             "model":"gpt-4o",
-            "messages":history
+            "messages":history,
+            "temperature": 0
             # all possible request body params here: https://platform.openai.com/docs/api-reference/chat/create
         }
         response = requests.post(self.url, headers=headers,json=data, verify=False)
