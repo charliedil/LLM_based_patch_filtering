@@ -10,7 +10,8 @@ class llama:
         data = {
             "mode":"instruct",#you can also do "chat". I prefer instruct, it's more formal. If you do chat, system messages do not work for some reason
             "character":"Example",
-            "messages":history
+            "messages":history,
+            "temperature":0
             # all possible request body params here: https://platform.openai.com/docs/api-reference/chat/create
         }
         response = requests.post(self.url, headers=headers,json=data, verify=False)
