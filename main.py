@@ -35,7 +35,7 @@ def main():
         elif prompt=="gen_know":
             header = ["content", "label", "pred", "summary", "score"]
             try: 
-                pred, summary, score =sep_gen_knowledge_prompting(llm, content, desc, bugfix)
+                pred, summary, score =gen_knowledge_prompting(llm, content, desc, bugfix)
                 rows.append([content, bugfix, pred, summary, score])
                 thing2 = pd.DataFrame(rows, columns=header)
                 thing2.to_csv(out)
