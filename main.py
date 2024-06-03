@@ -38,7 +38,7 @@ def main():
             rows.append([content, bugfix, pred])
         elif prompt=="gen_know":
             header = ["content", "label", "pred", "summary", "score"]
-            if index>=prev_len_rows
+            if index>=prev_len_rows:
                 try: 
                     pred, summary, score =gen_knowledge_prompting(llm, content, desc, bugfix)
                     rows.append([content, bugfix, pred, summary, score])
