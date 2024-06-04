@@ -20,7 +20,12 @@ def main():
     elif model == "gpt":
         llm = gpt()
     thing = pd.read_csv(inp)
-    rows = []
+    ## recover checkpoint, comment out for now if no checkpoint
+    checkpoint = pd.read_csv(out, index_col=0)
+    # rows = [] # uncomment if no checkpoint
+    rows = checkpoint.values.tolist()
+    print(rows)
+    prev_num_rows = len(rows)
     header = []
     for index, row in thing.iterrows():
         content = row["content"]
@@ -32,13 +37,19 @@ def main():
             rows.append([content, bugfix, pred])
         elif prompt=="gen_know":
             header = ["content", "label", "pred", "summary", "score"]
-            try: 
-                pred, summary, score =gen_knowledge_prompting(llm, content, desc, bugfix)
-                rows.append([content, bugfix, pred, summary, score])
-            except:
-                thing2 = pd.DataFrame(rows, columns=header)
-                thing2.to_csv(out)
-                exit()
+            if index>=prev_num_rows:
+                try: 
+                    pred, summary, score =gen_knowledge_prompting(llm, content, desc, bugfix)
+                    rows.append([content, bugfix, pred, summary, score])
+                    thing2 = pd.DataFrame(rows, columns=header)
+                    thing2.to_csv(out)
+
+
+                except:
+                    thing2 = pd.DataFrame(rows, columns=header)
+                    thing2.to_csv(out)
+                    print("FAILED")
+                    exit()
 
 
     thing2 = pd.DataFrame(rows, columns=header)
