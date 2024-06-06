@@ -1,5 +1,6 @@
 from exp import baseline_prompting, gen_knowledge_prompting, sep_gen_knowledge_prompting
 from llama import llama
+from lora import lora
 from gpt import gpt
 import sys
 import pandas as pd
@@ -19,11 +20,13 @@ def main():
         llm = llama(uri)
     elif model == "gpt":
         llm = gpt()
+    elif model == "lora":
+        llm = lora(uri)
     thing = pd.read_csv(inp)
     ## recover checkpoint, comment out for now if no checkpoint
-    checkpoint = pd.read_csv(out, index_col=0)
-    # rows = [] # uncomment if no checkpoint
-    rows = checkpoint.values.tolist()
+    #checkpoint = pd.read_csv(out, index_col=0)
+    rows = [] # uncomment if no checkpoint
+    #rows = checkpoint.values.tolist()
     print(rows)
     prev_num_rows = len(rows)
     header = []
