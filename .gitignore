@@ -6,6 +6,7 @@ output3.log
 run.sh
 run2.sh
 run3.sh
+run_lora.sh
 first_half.csv
 second_half.csv
 first_half_out.csv
