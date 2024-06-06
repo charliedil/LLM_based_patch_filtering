@@ -23,10 +23,10 @@ def main():
         llm = gpt()
     thing = pd.read_csv(inp)
     ## recover checkpoint, comment out for now if no checkpoint
-    checkpoint = pd.read_csv(out, index_col=0)
-    # rows = [] # uncomment if no checkpoint
-    rows = checkpoint.values.tolist()
-    print(rows)
+    #checkpoint = pd.read_csv(out, index_col=0)
+    rows = [] # uncomment if no checkpoint
+    #rows = checkpoint.values.tolist()
+    #print(rows)
     prev_num_rows = len(rows)
     header = []
     for index, row in thing.iterrows():
@@ -35,8 +35,18 @@ def main():
         bugfix = row["label"]
         if prompt=="baseline":
             header = ["content", "label", "pred"]
-            pred = baseline_prompting(llm, content, desc, bugfix)
-            rows.append([content, bugfix, pred])
+            if index>=prev_num_rows:
+                try:
+                    pred = baseline_prompting(llm, content, desc, bugfix)
+                    rows.append([content, bugfix, pred])
+                    thing2 = pd.DataFrame(rows, columns=header)
+                    thing2.to_csv(out)
+                except:
+                    thing2 = pd.DataFrame(rows, columns=header)
+                    thing2.to_csv(out)
+                    print("FAILED")
+                    exit()
+
         elif prompt=="gen_know":
             header = ["content", "label", "pred", "summary", "score"]
             if index>=prev_num_rows:
