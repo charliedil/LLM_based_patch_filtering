@@ -1,7 +1,7 @@
 import pandas as pd
 from sklearn.metrics import classification_report
 def score():
-    df = pd.read_csv("thing_code_out.csv")
+    df = pd.read_csv("thing_few_out.csv")
     df2 = pd.read_csv("thing.csv")
 
     pred = list(df["pred"].values)
