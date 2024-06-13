@@ -81,7 +81,7 @@ def main():
             if index >= prev_num_rows:
                 try:
                     pred = cot_prompting(llm, content, desc, bugfix)
-                    rows.append([content, bugfix, columns=header])
+                    rows.append([content, bugfix, pred])
                     thing2 = pd.DataFrame(rows, columns=header)
                     thing2.to_csv(out)
                 except:

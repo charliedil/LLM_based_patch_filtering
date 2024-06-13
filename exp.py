@@ -277,12 +277,12 @@ def cot_prompting(llm, content, desc, bugfix):
        # desc = row["desc"]
        # bugfix = row["label"]
     history=[]
-    history.append({"role":"user", "content":fewshot_prompt_string+"\n"+content)
+    history.append({"role":"user", "content":fewshot_prompt_string+"\n"+content})
     flag=0
     pred=0
     while flag!=3:
         history=[]
-        history.append({"role":"user", "content":fewshot_prompt_string+"\n"+content)
+        history.append({"role":"user", "content":fewshot_prompt_string+"\n"+content})
         result, history = llm.run(history)
         try:
             result = re.findall(r'\{[^{}]*\}', result)[0]
