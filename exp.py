@@ -1,6 +1,6 @@
 import pandas as pd
 import json
-def few_shot_prompting(llm, content, desc, bugfix):
+def fewshot_prompting(llm, content, desc, bugfix):
     fewshot_prompt_string= """Input:
          extent+=image->columns*sizeof(uint32);
  #endif
