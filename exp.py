@@ -233,7 +233,6 @@ def sep_gen_knowledge_prompting(llm, content, desc, bugfix):
 
 def baseline_prompting(llm, content, desc, bugfix):
     fewshot_prompt_string = "The code hunks provided are from a larger commit for a bugfix. Not every hunk contains the actual bugfix. Does the following code hunk contain a bugfix:"
-    thing = pd.read_csv("first_half.csv")
     rows = []
     header = ["content","label", "pred"]
     #for index, row in thing.iterrows():
@@ -249,6 +248,44 @@ def baseline_prompting(llm, content, desc, bugfix):
         history.append({"role":"user", "content":fewshot_prompt_string+"\n"+content+"\nPlease answer yes or no. Do not provide any more information. DO NOT EXPLAIN. Provide answer in this format {\"ans\":\"<Answer>\"}"})
         result, history = llm.run(history)
         try:
+            result_json = json.loads(result)
+            answer = result_json["ans"].lower()
+            if answer in ["yes", "no"]:
+                if answer=="yes":
+                    pred=1
+                else:
+                    pred=0
+                flag = 3
+            else:
+                print("no answer retrying")
+                flag+=1
+
+        except Exception as e:
+            print(str(e)+"retrying")
+            flag+=1
+
+    #rows.append([content, bugfix, pred])
+    #thing2 = pd.DataFrame(rows, columns=header)
+    #thing2.to_csv("thing21.csv")
+    return pred
+def cot_prompting(llm, content, desc, bugfix):
+    fewshot_prompt_string = "Below is a hunk from a patcg fixing a software vulnerability. Not all hunks in the patch are actually relevant to fixing the vulnerability. Please provide a summary of the changes that were implemented within the hunk. FInally answer with yes or no whetehr it is relevant to fixing a vulnerability. Provide your response in json format: {\"summary\":\"<ans>\":\"<Answer>\"}"
+    rows = []
+    header = ["content","label", "pred"]
+    #for index, row in thing.iterrows():
+        #content = row["content"]
+       # desc = row["desc"]
+       # bugfix = row["label"]
+    history=[]
+    history.append({"role":"user", "content":fewshot_prompt_string+"\n"+content)
+    flag=0
+    pred=0
+    while flag!=3:
+        history=[]
+        history.append({"role":"user", "content":fewshot_prompt_string+"\n"+content)
+        result, history = llm.run(history)
+        try:
+            result = re.findall(r'\{[^{}]*\}', result)[0]
             result_json = json.loads(result)
             answer = result_json["ans"].lower()
             if answer in ["yes", "no"]:

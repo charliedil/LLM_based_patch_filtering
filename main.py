@@ -67,7 +67,7 @@ def main():
             header = ["content", "label", "pred"]
             if index>=prev_num_rows:
                 try:
-                    pred = baseline_prompting(llm, content, desc, bugfix)
+                    pred = fewshot_prompting(llm, content, desc, bugfix)
                     rows.append([content, bugfix, pred])
                     thing2 = pd.DataFrame(rows, columns=header)
                     thing2.to_csv(out)
@@ -76,7 +76,19 @@ def main():
                     thing2.to_csv(out)
                     print("FAILED")
                     exit()
-
+        elif prompt=="cot":
+            header = ["content", "label", "pred"]
+            if index >= prev_num_rows:
+                try:
+                    pred = cot_prompting(llm, content, desc, bugfix)
+                    rows.append([content, bugfix, columns=header])
+                    thing2 = pd.DataFrame(rows, columns=header)
+                    thing2.to_csv(out)
+                except:
+                    thing2 = pd.DataFrame(rows, columns=header)
+                    thing2.to_csv(out)
+                    print("FAILED")
+                    exit()
 
     thing2 = pd.DataFrame(rows, columns=header)
     thing2.to_csv(out)

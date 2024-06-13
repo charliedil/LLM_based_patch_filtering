@@ -18,3 +18,5 @@ api_keys.py
 venv
 thing_out.csv
 thing_few_out.csv
+thing_code_few_out.csv
+thing_reg_few_out.csv
