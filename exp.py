@@ -11,7 +11,7 @@ def few_shot_prompting(llm, content, desc, bugfix):
            ThrowTIFFException(ResourceLimitError,"MemoryAllocationFailed");
          (void) memset(strip_pixels,0,extent*sizeof(*strip_pixels));
 Output:
-yes
+{"ans":"yes"}
 Input:
      'transparent': (0, 0, 0, 0),
  }
@@ -22,8 +22,8 @@ Input:
 +RGB = re.compile(r'rgb\((.+?)\)')
  HEX_RRGGBB = re.compile('#[0-9a-f]{6}')
  HEX_RGB = re.compile('#[0-9a-f]{3}')
-Knowledge:
-This hunk simplifies the two regular expressions RGBA and RGB to avoid reDOS attacks. [\n\r\t]* was removed in both, as the expressions could suffer exponential backtracking due to the nondeterministic nature of how regular expression matching is done. By removing this part of the regular expressions, the matches are still the same as the (.+?) still matches any number of characters in the parentheses. This hunk adds .strip() to the match groups for both the RGBA and RGB regular expressions. This strips the whitespace which was just matched in the functions and lets the color values be used easier even if the formatting was not perfect. This does not directly fix the vulnerability, but was more of a result of the patch.
+Output:
+{"ans":"no"}
 Input:
  module.exports = function killport(port) {
    return (new Promise(function(resolve, reject) {
@@ -31,11 +31,32 @@ Input:
      var cmd = 'lsof -i:' + port; 
      cp.exec(cmd, function(err, stdout, stderr){
        // do not check `err`, if no process found
-Knowledge:
-This hunk adds a check to verify that the port entered is a number, and if it is not it throws an error. This change fixes how the use of the child_process exec function was used without input sanitization, which lets attackers execute arbritrary commands as the provided port.
-Following the same format above from the examples, generate knowledge for the following input:
-
+Output:
+{"ans":"yes"}
+Following the same format above from the examples, identify if the following input contains a bugfix. Do not provide any other information. Do not explain. Provide your answer in this format: {"ans":"<Answer>"}
 """
+    flag = 0
+    pred=0
+    while flag!=3:
+        history=[]
+        history.append({"role":"user", "content":fewshot_prompt_string+"\n"+content})
+        result, history = llm.run(history)
+        try:
+            result_json = json.loads(result)
+            answer = result_json["ans"].lower()
+            if answer in ["yes", "no"]:
+                if answer=="yes":
+                    pred=1
+                else:
+                    pred=0
+                flag = 3
+            else:
+                print("no answer retrying")
+                flag+=1
+
+        except Exception as e:
+            print(str(e)+"retrying")
+    return pred
 
 def gen_knowledge_prompting(llm,content, desc, bugfix):
     fewshot_prompt_string= """Input:
