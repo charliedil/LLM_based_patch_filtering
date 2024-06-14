@@ -55,7 +55,9 @@ Following the same format above from the examples, identify if the following inp
                 flag+=1
 
         except Exception as e:
+            print(result)
             print(str(e)+"retrying")
+            flag+=1
     return pred
 
 def gen_knowledge_prompting(llm,content, desc, bugfix):
