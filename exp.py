@@ -271,7 +271,7 @@ def baseline_prompting(llm, content, desc, bugfix):
     #thing2.to_csv("thing21.csv")
     return pred
 def cot_prompting(llm, content, desc, bugfix):
-    fewshot_prompt_string = "Below is a hunk from a patcg fixing a software vulnerability. Not all hunks in the patch are actually relevant to fixing the vulnerability. Please provide a summary of the changes that were implemented within the hunk. FInally answer with yes or no whetehr it is relevant to fixing a vulnerability. Provide your response in json format: {\"summary\":\"<ans>\":\"<Answer>\"}"
+    fewshot_prompt_string = "Below is a hunk from a patcg fixing a software vulnerability. Not all hunks in the patch are actually relevant to fixing the vulnerability. Please provide a summary of the changes that were implemented within the hunk. FInally answer with yes or no whetehr it is relevant to fixing a vulnerability. Provide your response in json format: {\"summary\":\"<Summary>\",\"ans\":\"<Answer>\"}"
     rows = []
     header = ["content","label", "pred"]
     #for index, row in thing.iterrows():
