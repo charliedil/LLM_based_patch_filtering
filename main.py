@@ -1,4 +1,4 @@
-from exp import baseline_prompting, gen_knowledge_prompting, sep_gen_knowledge_prompting, fewshot_prompting, cot_prompting
+from exp import baseline_prompting, gen_knowledge_prompting, sep_gen_knowledge_prompting, fewshot_prompting, cot_prompting, zeroshot_prompting
 from llama import llama
 from lora import lora
 from gpt import gpt
@@ -37,7 +37,7 @@ def main():
             header = ["content", "label", "pred"]
             if index>=prev_num_rows:
                 try:
-                    pred = baseline_prompting(llm, content, desc, bugfix)
+                    pred = zeroshot_prompting(llm, content, desc, bugfix)
                     rows.append([content, bugfix, pred])
                     thing2 = pd.DataFrame(rows, columns=header)
                     thing2.to_csv(out)
@@ -84,10 +84,10 @@ def main():
                     rows.append([content, bugfix, pred])
                     thing2 = pd.DataFrame(rows, columns=header)
                     thing2.to_csv(out)
-                except:
+                except Exception as e:
                     thing2 = pd.DataFrame(rows, columns=header)
                     thing2.to_csv(out)
-                    print("FAILED")
+                    print(f"FAILED {e}")
                     exit()
 
     thing2 = pd.DataFrame(rows, columns=header)
