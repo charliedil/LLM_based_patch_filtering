@@ -55,6 +55,7 @@ Following the same format above from the examples, identify if the following inp
                 flag+=1
 
         except Exception as e:
+            print(history)
             print(result)
             print(str(e)+"retrying")
             flag+=1
@@ -271,7 +272,7 @@ def baseline_prompting(llm, content, desc, bugfix):
     #thing2.to_csv("thing21.csv")
     return pred
 def cot_prompting(llm, content, desc, bugfix):
-    fewshot_prompt_string = "Below is a hunk from a patcg fixing a software vulnerability. Not all hunks in the patch are actually relevant to fixing the vulnerability. Please provide a summary of the changes that were implemented within the hunk. FInally answer with yes or no whetehr it is relevant to fixing a vulnerability. Provide your response in json format: {\"summary\":\"<ans>\":\"<Answer>\"}"
+    fewshot_prompt_string = "Below is a hunk from a patch fixing a software vulnerability. Not all hunks in the patch are actually relevant to fixing the vulnerability. Please provide a summary of the changes that were implemented within the hunk. FInally answer with yes or no whetehr it is relevant to fixing a vulnerability. Provide your response in json format: {\"summary\":\"<ans>\":\"<Answer>\"}"
     rows = []
     header = ["content","label", "pred"]
     #for index, row in thing.iterrows():
@@ -279,7 +280,7 @@ def cot_prompting(llm, content, desc, bugfix):
        # desc = row["desc"]
        # bugfix = row["label"]
     history=[]
-    history.append({"role":"user", "content":fewshot_prompt_string+"\n"+content})
+    history.append({"role":"user", "content":fewshot_prompt_string+"\nInput:\n"+content})
     flag=0
     pred=0
     while flag!=3:
