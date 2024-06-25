@@ -233,7 +233,43 @@ def sep_gen_knowledge_prompting(llm, content, desc, bugfix):
     #thing2.to_csv("thing21.csv")
     return pred, summaries[max_summary], max_score
 
+def zeroshot_prompting(llm, content, desc, bugfix):
+    fewshot_prompt_string = f"Bug description: {desc}\n\nThe following code hunk is part of a larger commit intended to fix the above bug. Code hunks that only contain changes to whitespace, documentation, tests are not bug fixes. Code hunks that perform refactoring or unrelated changes do not qualify as bugfixes.\n\nEvaluate the code hunk below and detgermine if it contains a fix to the described bug:"
+    rows = []
+    header = ["content","label", "pred"]
+    #for index, row in thing.iterrows():
+        #content = row["content"]
+       # desc = row["desc"]
+       # bugfix = row["label"]
+    history=[]
+    history.append({"role":"user", "content":fewshot_prompt_string+"\n\n"+content+"\nPlease respond with \"yes\" or \"no\" only. Do not provide any more information or explanations. Format your response as follows: {\"ans\":\"<Answer>\"}"})
+    flag=0
+    pred=0
+    while flag!=3:
+        history=[]
+        history.append({"role":"user", "content":fewshot_prompt_string+"\n"+content+"\nPlease answer yes or no. Do not provide any more information. DO NOT EXPLAIN. Provide answer in this format {\"ans\":\"<Answer>\"}"})
+        result, history = llm.run(history)
+        try:
+            result_json = json.loads(result)
+            answer = result_json["ans"].lower()
+            if answer in ["yes", "no"]:
+                if answer=="yes":
+                    pred=1
+                else:
+                    pred=0
+                flag = 3
+            else:
+                print("no answer retrying")
+                flag+=1
 
+        except Exception as e:
+            print(str(e)+"retrying")
+            flag+=1
+
+    #rows.append([content, bugfix, pred])
+    #thing2 = pd.DataFrame(rows, columns=header)
+    #thing2.to_csv("thing21.csv")
+    return pred
 
 def baseline_prompting(llm, content, desc, bugfix):
     fewshot_prompt_string = "The code hunks provided are from a larger commit for a bugfix. Not every hunk contains the actual bugfix. Does the following code hunk contain a bugfix:"
