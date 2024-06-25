@@ -247,7 +247,8 @@ def zeroshot_prompting(llm, content, desc, bugfix):
     pred=0
     while flag!=3:
         history=[]
-        history.append({"role":"user", "content":fewshot_prompt_string+"\n"+content+"\nPlease answer yes or no. Do not provide any more information. DO NOT EXPLAIN. Provide answer in this format {\"ans\":\"<Answer>\"}"})
+        history.append({"role":"user", "content":fewshot_prompt_string+"\n\n"+content+"\nPlease respond with \"yes\" or \"no\" only. Do not provide any more information or explanations. Format your response as follows: {\"ans\":\"<Answer>\"}"})
+ 
         result, history = llm.run(history)
         try:
             result_json = json.loads(result)
