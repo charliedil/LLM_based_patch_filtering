@@ -1,7 +1,7 @@
 import pandas as pd
 from sklearn.metrics import precision_score, recall_score, f1_score, accuracy_score
 def score():
-    df = pd.read_csv("thing_cot_out.csv")
+    df = pd.read_csv("thing_lora.csv")
     df2 = pd.read_csv("thing.csv")
 
     pred = list(df["pred"].values)

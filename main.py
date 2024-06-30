@@ -1,4 +1,4 @@
-from exp import baseline_prompting, gen_knowledge_prompting, sep_gen_knowledge_prompting, fewshot_prompting, cot_prompting, zeroshot_prompting
+from exp import baseline_prompting, gen_knowledge_prompting, sep_gen_knowledge_prompting, fewshot_prompting, cot_prompting, zeroshot_prompting, mod_gen_knowledge_prompting
 from llama import llama
 from lora import lora
 from gpt import gpt
@@ -38,29 +38,30 @@ def main():
             if index>=prev_num_rows:
                 try:
                     pred = zeroshot_prompting(llm, content, desc, bugfix)
+                    print("pred success")
                     rows.append([content, bugfix, pred])
                     thing2 = pd.DataFrame(rows, columns=header)
                     thing2.to_csv(out)
-                except:
+                except Exception as e:
                     thing2 = pd.DataFrame(rows, columns=header)
                     thing2.to_csv(out)
-                    print("FAILED")
+                    print("FAILED"+str(e))
                     exit()
 
         elif prompt=="gen_know":
             header = ["content", "label", "pred", "summary", "score"]
             if index>=prev_num_rows:
                 try: 
-                    pred, summary, score =gen_knowledge_prompting(llm, content, desc, bugfix)
+                    pred, summary, score =mod_gen_knowledge_prompting(llm, content, desc, bugfix)
                     rows.append([content, bugfix, pred, summary, score])
                     thing2 = pd.DataFrame(rows, columns=header)
                     thing2.to_csv(out)
 
 
-                except:
+                except Exception as e:
                     thing2 = pd.DataFrame(rows, columns=header)
                     thing2.to_csv(out)
-                    print("FAILED")
+                    print("FAILED"+str(e))
                     exit()
 
         elif prompt=="fewshot":
