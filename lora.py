@@ -13,7 +13,10 @@ class lora:
         response = requests.post(self.url, json={"prompt":prompt})
         print(response.status_code)
         assistant_message = response.json()['output']
-        assistant_message = assistant_message.split("### Response:\n")[1]
+        if "Response" in assistant_message:
+            assistant_message = assistant_message.split("### Response:\n")[1]
+        else:
+            print("automatic no")
         history.append({"role":"assistant", "content":assistant_message})
         return assistant_message, history
 
