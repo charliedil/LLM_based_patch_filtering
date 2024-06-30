@@ -114,8 +114,8 @@ This hunk replaces the bitwise operation for file type checking in CPIO archives
     summaries = []
     for i in range(3):
         history=[]
-        history.append({"role":"system", "content":"Your job is to generate knowledge for a given hunk and description of the patch it is from"})
-        history.append({"role":"user", "content":fewshot_prompt_string+"\nDescription: "+desc+"\nHunk:\n"+content})
+        history.append({"role":"system", "content":"Your job is to generate Knowledge for a given Hunk using the Description."})
+        history.append({"role":"user", "content":fewshot_prompt_string+"\nDescription: "+desc+"\nHunk:\n"+content+"\nKnowledge:\n"})
 
         result, history = llm.run(history)
         summaries.append(result)
@@ -127,7 +127,7 @@ This hunk replaces the bitwise operation for file type checking in CPIO archives
         while(flag!=3):
             history = []
             history.append({"role":"system", "content":"Using the knowledge provided, answer the question given"})
-            history.append({"role":"user", "content":"The following code hunk is part of a larger commit intended to fix the following bug. Code hunks that only contain changes to whitespace, documentation, tests are not bug fixes. Code hunks that perform regactoring or unrelated changes do not qualify as bugfixes. Evaluate the code hunk below and determine if it contains a fix to the described bug.\nDescription: "+desc+"\nKnowledge: "+summaries[i]+"\n Please respond with \"yes\" or \"no\" and a confidence score on a scale from 0 to 1. Do not provider any more information or explanations. Format your response as follows: {\"ans\":<Answer>, \"conf\":<Confidence Score>}"})
+            history.append({"role":"user", "content":"The following code hunk is part of a larger commit intended to fix the following bug. Code hunks that only contain changes to whitespace, documentation, tests are not bug fixes. Code hunks that perform refactoring or unrelated changes do not qualify as bugfixes. Evaluate the code hunk below and determine if it contains a fix to the described bug.\nDescription: "+desc+"\nKnowledge: "+summaries[i]+"\n Please respond with \"yes\" or \"no\" and a confidence score on a scale from 0 to 1. Do not provide any more information or explanations. Format your response as follows: {\"ans\":<Answer>, \"conf\":<Confidence Score>}"})
             result, history = llm.run(history)
             try:
                 result_json = json.loads(result)
