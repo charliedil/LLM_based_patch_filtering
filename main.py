@@ -1,4 +1,4 @@
-from exp import baseline_prompting, gen_knowledge_prompting, sep_gen_knowledge_prompting, fewshot_prompting, cot_prompting, zeroshot_prompting, mod_gen_knowledge_prompting
+from exp import baseline_prompting, gen_knowledge_prompting, sep_gen_knowledge_prompting, fewshot_prompting, cot_prompting, zeroshot_prompting, mod_gen_knowledge_prompting, mod_fewshot_prompting
 from llama import llama
 from lora import lora
 from gpt import gpt
@@ -68,7 +68,7 @@ def main():
             header = ["content", "label", "pred"]
             if index>=prev_num_rows:
                 try:
-                    pred = fewshot_prompting(llm, content, desc, bugfix)
+                    pred = mod_fewshot_prompting(llm, content, desc, bugfix)
                     rows.append([content, bugfix, pred])
                     thing2 = pd.DataFrame(rows, columns=header)
                     thing2.to_csv(out)
