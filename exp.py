@@ -517,8 +517,40 @@ def cot_prompting(llm, content, desc, bugfix):
     #thing2.to_csv("thing21.csv")
     return pred
  
+def mod_cot_prompting(llm, content, desc, bugfix):
+    fewshot_prompt_string = """The following code hunk is part of a larger commit intended to fix the above bug. Code hunks that only contain changes to whitespace, documentation, tests are not bug fixes. Code hunks that perform refactoring or unrelated changes do not qualify as bugfixes.
 
+Please provide a summary of the changes that were implemented within the hunk. Based on the summary, answer with yes or no whether it is relevant to fixing a bug. Provide your response in json format: {\"summary\":\"<Summary>\",\"ans\":\"<Answer>\"}
+    
+    """
+    flag=0
+    pred=0
+    while flag!=3:
+        history=[]
+        history.append({"role":"user", "content":fewshot_prompt_string+"\n"+content})
+        result, history = llm.run(history)
+        try:
+            result = re.findall(r'\{[^{}]*\}', result)[0]
+            result_json = json.loads(result)
+            answer = result_json["ans"].lower()
+            if answer in ["yes", "no"]:
+                if answer=="yes":
+                    pred=1
+                else:
+                    pred=0
+                flag = 3
+            else:
+                print("no answer retrying")
+                flag+=1
 
+        except Exception as e:
+            print(str(e)+"retrying")
+            flag+=1
+
+    #rows.append([content, bugfix, pred])
+    #thing2 = pd.DataFrame(rows, columns=header)
+    #thing2.to_csv("thing21.csv")
+    return pred
  
 
         
