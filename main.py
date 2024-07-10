@@ -1,3 +1,4 @@
+"""rq1"""
 from exp import baseline_prompting, gen_knowledge_prompting, sep_gen_knowledge_prompting, fewshot_prompting, cot_prompting, zeroshot_prompting, mod_gen_knowledge_prompting, mod_fewshot_prompting, mod_cot_prompting
 from llama import llama
 from lora import lora
