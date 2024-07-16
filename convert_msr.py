@@ -2,22 +2,40 @@ import pandas as pd
 import re
 import nvdlib
 import time
+recovery =False
 tot_not_found = 0
+output_file = "msr_val.csv"
 df = pd.read_csv("../val.csv")#insert path here
 rows = []
+if recovery:
+    rows = pd.read_csv(output_file, index_col=0).values.tolist()
+prev_len = len(rows)
 i=0
+j=0
 for index, row in df.iterrows():
-    if row["target"]==1:
+    if row["target"]==1 and i>=prev_len:
+        print(index)
+        desc=""
+        i+=1
         fixed_func = row["vul_func_with_fix"]
         patch = row["patch"]
         cve_id = row["CVE ID"]
         print(cve_id)
-        r = nvdlib.searchCVE(cveId=cve_id)[0]
-        desc = r.descriptions[0].value
-        time.sleep(1)
+        if not pd.isna(cve_id) and ", " not in str(cve_id):
+            r = nvdlib.searchCVE(cveId=cve_id)[0]
+            desc = r.descriptions[0].value
+            time.sleep(1)
+        elif ", " in str(cve_id):
+            cve_ids = str(cve_id).split(", ")
+            for c in cve_ids:
+                r=nvdlib.searchCVE(cveId=c)[0]
+                desc+=r.descriptions[0].value
+                time.sleep(1)
+        else:
+            desc = row["commit_message"]
         added = []
         removed= []
-        hunks= re.split(r'^@@.*?@@', patch)
+        hunks= re.split(r'@@.*?@@', patch)
         add_flag = False
         remove_flag = False
         for line in fixed_func.split("\n"):
@@ -40,20 +58,27 @@ for index, row in df.iterrows():
                     found=True
                     the_hunk = hunk
         if not found:
-            """print(hunks)
-            print(added)
-            print(removed)
-            print(fixed_func)"""
-            print("uhoh")
-            tot_not_found+=1
+            the_hunks = []
+            for hunk in hunks:
+                for line in added:
+                    if line in hunk.split("\n"):
+                        the_hunks.append(hunk)
+            for hunk in the_hunks:
+                rows.append([j, hunk, desc,1])
+                df2 = pd.DataFrame(rows, columns=["desc_id", "content", "desc", "label"])
+                df2.to_csv(output_file)
+            j+=1
         else:
+            rows.append([j,the_hunk,desc,1])
+            df2 = pd.DataFrame(rows,columns=["desc_id","content","desc","label"] )
+            df2.to_csv(output_file) #change path
+            j+=1
+    elif row["target"]==1:
+        i+=1
 
-            rows.append([the_hunk,desc,1])
 
-
-df = pd.DataFrame(rows,columns=["content","desc","label"] )
-pd.to_csv("msr_val.csv",df) #change path
-print(tot_not_found)
+df = pd.DataFrame(rows,columns=["desc_id","content","desc","label"] )
+df.to_csv(output_file) #change path
         
         
 
