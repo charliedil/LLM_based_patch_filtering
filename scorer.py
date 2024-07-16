@@ -1,7 +1,7 @@
 import pandas as pd
-from sklearn.metrics import precision_score, recall_score, f1_score, accuracy_score
+from sklearn.metrics import precision_score, recall_score, f1_score, accuracy_score, confusion_matrix
 def score():
-    df = pd.read_csv("thing_code_modfewshot.csv")
+    df = pd.read_csv("thing_code_mod_cot_out.csv")
     df2 = pd.read_csv("thing.csv")
 
     pred = list(df["pred"].values)
@@ -13,6 +13,8 @@ def score():
     recall = recall_score(gt, pred)
     f1 = f1_score(gt, pred)
     acc = accuracy_score(gt, pred)
+
+    print(confusion_matrix(gt, pred))
     print(f'Precision: {precision:.2f}')
     print(f'Recall: {recall:.2f}')
     print(f'F1 Score: {f1:.2f}')

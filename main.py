@@ -24,9 +24,9 @@ def main():
         llm = lora(uri)
     thing = pd.read_csv(inp)
     ## recover checkpoint, comment out for now if no checkpoint
-    checkpoint = pd.read_csv(out, index_col=0)
+    #checkpoint = pd.read_csv(out, index_col=0)
     rows = [] # uncomment if no checkpoint
-    rows = checkpoint.values.tolist()
+    #rows = checkpoint.values.tolist()
     prev_num_rows = len(rows)
     header = []
     for index, row in thing.iterrows():
