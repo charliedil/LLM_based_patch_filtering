@@ -61,7 +61,10 @@ for index, row in df.iterrows():
             the_hunks = []
             for hunk in hunks:
                 for line in added:
-                    if line in hunk.split("\n"):
+                    if line in hunk.split("\n") and hunk not in the_hunks:
+                        the_hunks.append(hunk)
+                for line in removed:
+                    if line in hunk.split("\n") and hunk not in the_hunks:
                         the_hunks.append(hunk)
             for hunk in the_hunks:
                 rows.append([j, hunk, desc,1])
@@ -79,8 +82,3 @@ for index, row in df.iterrows():
 
 df = pd.DataFrame(rows,columns=["desc_id","content","desc","label"] )
 df.to_csv(output_file) #change path
-        
-        
-
-
-
