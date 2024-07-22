@@ -112,7 +112,7 @@ Knowledge:
 This hunk replaces the bitwise operation for file type checking in CPIO archives with a utility method call to CpioUtil.fileType(), addressing the IllegalArgumentException exceptions caused by non-zero file modes.
 """
     summaries = []
-    for i in range(3):
+    for i in range(1):#changed to 1 here for cost savings
         history=[]
         history.append({"role":"system", "content":"Your job is to generate Knowledge for a given Hunk using the Description."})
         history.append({"role":"user", "content":fewshot_prompt_string+"\nDescription: "+desc+"\nHunk:\n"+content+"\nKnowledge:\n"})
@@ -122,7 +122,7 @@ This hunk replaces the bitwise operation for file type checking in CPIO archives
     max_ans = ""
     max_score = 0
     max_summary = 0
-    for i in range(3):
+    for i in range(1):#changed tro 1 here for cost savings
         flag = 0
         while(flag!=3):
             history = []
