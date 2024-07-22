@@ -7,7 +7,7 @@ import sys
 import pandas as pd
 def main():
     print(sys.argv)
-    if len(sys.argv) != 6:
+    if len(sys.argv) != 7:
         print("Please provide 5 arguments: uri inputfile outputfile prompt model")
         print("prompt options: baseline, gen_know")
         exit()
@@ -16,7 +16,10 @@ def main():
     out = sys.argv[3]
     prompt = sys.argv[4]
     model = sys.argv[5]
+    rq = int(sys.argv[6])
     llm = None
+    prev_desc_id = None
+    prev_pred = None
     if model == "llama":
         llm = llama(uri)
     elif model == "gpt":
@@ -52,9 +55,32 @@ def main():
         elif prompt=="gen_know":
             header = ["content", "label", "pred", "summary", "score"]
             if index>=prev_num_rows:
-                try: 
-                    pred, summary, score =mod_gen_knowledge_prompting(llm, content, desc, bugfix)
-                    rows.append([content, bugfix, pred, summary, score])
+                if rq==2:
+                    try:
+                        desc_id = row["desc_id"]
+                        if desc_id==prev_desc_id and prev_pred==1:
+                            rows.append([content, bugfix, prev_pred, "", -1])
+                            thing2 = pd.DataFrame(rows, columns=header)
+                            thing2.to_csv(out)
+                        else:
+                            pred, summary, score =mod_gen_knowledge_prompting(llm, content, desc, bugfix)
+                            rows.append([content, bugfix, pred, summary, score])
+                            thing2 = pd.DataFrame(rows, columns=header)
+                            thing2.to_csv(out)
+
+                            prev_desc_id = desc_id
+                            prev_pred = pred
+                    except Exception as e:
+                        thing2 = pd.DataFrame(rows, columns=header)
+                        thing2.to_csv(out)
+                        print("FAILED"1+str(e))
+                        exit()
+
+
+            else:
+                try:
+                    pred, summary, score=mod_gen_knowledge_prompting(llm, content, desc, bugfix)
+                    rows.append([content, bugfix, pred, summary,score])
                     thing2 = pd.DataFrame(rows, columns=header)
                     thing2.to_csv(out)
 
@@ -62,7 +88,7 @@ def main():
                 except Exception as e:
                     thing2 = pd.DataFrame(rows, columns=header)
                     thing2.to_csv(out)
-                    print("FAILED"+str(e))
+                    print("FAILED"1+str(e))
                     exit()
 
         elif prompt=="fewshot":
