@@ -8,7 +8,7 @@ import pandas as pd
 def main():
     print(sys.argv)
     if len(sys.argv) != 7:
-        print("Please provide 5 arguments: uri inputfile outputfile prompt model")
+        print("Please provide 5 arguments: uri inputfile outputfile prompt model rq")
         print("prompt options: baseline, gen_know")
         exit()
     uri = sys.argv[1]
@@ -27,6 +27,10 @@ def main():
     elif model == "lora":
         llm = lora(uri)
     thing = pd.read_csv(inp)
+    #delete this later
+    merged_thing = pd.read_csv("merged_prev_val.csv")
+    merged_thing_values = merged_thing.values.tolist()
+    merge_index = 0
     ## recover checkpoint, comment out for now if no checkpoint
     #checkpoint = pd.read_csv(out, index_col=0)
     rows = [] # uncomment if no checkpoint
@@ -58,7 +62,13 @@ def main():
                 if rq==2:
                     try:
                         desc_id = row["desc_id"]
-                        if desc_id==prev_desc_id and prev_pred==1:
+                        #delete later
+                        if merged_thing_values[merge_index][1]==content:
+                            rows.append(merged_thing_values[merge_index][1:])
+                            merge_index+=1
+                            print("it worked!")
+
+                        elif desc_id==prev_desc_id and prev_pred==1:
                             rows.append([content, bugfix, prev_pred, "", -1])
                             thing2 = pd.DataFrame(rows, columns=header)
                             thing2.to_csv(out)
@@ -73,7 +83,7 @@ def main():
                     except Exception as e:
                         thing2 = pd.DataFrame(rows, columns=header)
                         thing2.to_csv(out)
-                        print("FAILED"1+str(e))
+                        print("FAILED"+str(e))
                         exit()
 
 
@@ -88,7 +98,7 @@ def main():
                 except Exception as e:
                     thing2 = pd.DataFrame(rows, columns=header)
                     thing2.to_csv(out)
-                    print("FAILED"1+str(e))
+                    print("FAILED"+str(e))
                     exit()
 
         elif prompt=="fewshot":
