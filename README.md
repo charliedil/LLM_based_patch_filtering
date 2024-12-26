@@ -7,6 +7,7 @@
 * llm/llama.py: Used to send get requests in the specific format for Llama
 * llm/gpt.py: Used to send get requests in the specific format for gpt-4o
 * main.py: Driver file of this program. Features a command line interface described below (But more details can be found by running ```python main.py -h```). Allows users to run our experiments from the paper. Divided into RQ1 and RQ2, described below
+* scorer.py: Used at the end of main.py to score RQ1 results
 
 ## Getting Started
 If using GPT, please insert OpenAI API key in api_keys.py
