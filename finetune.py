@@ -129,7 +129,7 @@ class CodeBERTFineTuner(L.LightningModule):
     def configure_optimizers(self):
         return AdamW(self.parameters(), lr=self.learning_rate)
 
-for iteration in range(2,3):
+for iteration in range(3):
     for fold in range(5):
 
         wandb_logger = WandbLogger(name=f"cleaned_codet5_iter_{iteration}_fold_{fold}",log_model=True)
