@@ -44,7 +44,8 @@ class CustomDataset(Dataset):
         return self.labels
 
 class CodeBERTFineTuner(L.LightningModule):
-    def __init__(self,iteration, fold,model_name="Salesforce/codet5-base", num_labels=2, learning_rate=2e-7):#replace with actual model name
+    # Replace model name with actual model name
+    def __init__(self,iteration, fold,model_name="Salesforce/codet5-base", num_labels=2, learning_rate=2e-7):
         super().__init__()
         self.save_hyperparameters()
         self.acc = BinaryAccuracy()
@@ -56,7 +57,6 @@ class CodeBERTFineTuner(L.LightningModule):
         self.auprc = MulticlassAveragePrecision(2)
         self.iteration = iteration
         self.fold = fold
-        # Load CodeBERT model for sequence classification
         self.model = AutoModelForSequenceClassification.from_pretrained(model_name, num_labels=num_labels)
         self.tokenizer = AutoTokenizer.from_pretrained(model_name)
         self.learning_rate = learning_rate
@@ -138,7 +138,8 @@ for iteration in range(2,3):
         df = pd.read_csv(path+"cleaned_func_train_by_commit.csv")
         texts = df["processed_func"].tolist()
         labels =  df["target"].tolist()
-        tokenizer = AutoTokenizer.from_pretrained("Salesforce/codet5-base")#replace with actual tokenizer
+        #replace with actual tokenizer name
+        tokenizer = AutoTokenizer.from_pretrained("Salesforce/codet5-base")
         train_dataset = CustomDataset(texts, labels, tokenizer)
         train_dataloader = DataLoader(train_dataset,sampler=ImbalancedDatasetSampler(train_dataset),  batch_size=50, shuffle=False)
         df = pd.read_csv(path+"cleaned_func_val_by_commit.csv")
@@ -157,8 +158,9 @@ for iteration in range(2,3):
         test_dataloader = DataLoader(test_dataset, batch_size=50, shuffle=False)
 
         model = CodeBERTFineTuner(iteration,fold)
-
-        trainer =Trainer(max_epochs=10, devices=4,accelerator="gpu",strategy="deepspeed_stage_2", precision=16, logger=wandb_logger)#you can experiment with different numbers of GPUs
+        # The important one here is max_epochs should be 10, but the number of
+        # GPUs can be different depending on your needs
+        trainer =Trainer(max_epochs=10, devices=4,accelerator="gpu",strategy="deepspeed_stage_2", precision=16, logger=wandb_logger)
         trainer.fit(model, train_dataloader, val_dataloader)
         trainer.test(dataloaders=test_dataloader)
         wandb.finish()
