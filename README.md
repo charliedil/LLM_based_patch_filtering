@@ -4,6 +4,7 @@
 * api_keys.py: Insert OpenAI API key, if needed
 * convert.py: Has two methods, one to convert original MSR data into the right format for main.py, one to convert the raw output back into the MSR data format
 * exp.py: Constructs the prompts based off of the provided hunk and description. Each prompting strategy has a different method
+* finetune.py: Allows you to train models with the filtered data, like we did
 * llm/llama.py: Used to send get requests in the specific format for Llama
 * llm/gpt.py: Used to send get requests in the specific format for gpt-4o
 * main.py: Driver file of this program. Features a command line interface described below (But more details can be found by running ```python main.py -h```). Allows users to run our experiments from the paper. Divided into RQ1 and RQ2, described below
