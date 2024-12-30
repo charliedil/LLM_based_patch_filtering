@@ -49,6 +49,7 @@ Where:
   * gen_know is the prompting strategy (there is also zeroshot, fewshot, cot)
   * gpt is the model (specifically gpt-4o as of now)
   * 2 is the RQ
+
 After this, you can run ```python finetune.py``` to train the different models mentioned in the study on the filtered data. You will need [wandb](https://docs.wandb.ai/quickstart/) to view the results. Before running, please enter in the appropriate model/tokenizer names where the comments prompt you to. Same goes for the data, you need to enter in the path(s) to the datasets generated.
 
 ## Other Arguments
