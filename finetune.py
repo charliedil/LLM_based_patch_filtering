@@ -6,7 +6,6 @@ import lightning as L
 from lightning.pytorch import Trainer, seed_everything
 import torch
 from torch.utils.data import DataLoader, Dataset
-import pytorch_lightning as pl
 from transformers import AutoTokenizer, AutoModelForSequenceClassification, AdamW
 from torchmetrics.classification import BinaryAccuracy, BinaryPrecision,BinaryRecall, BinaryMatthewsCorrCoef, BinaryF1Score, MulticlassAUROC, MulticlassAveragePrecision
 from torcheval.metrics.functional import binary_auprc
@@ -43,7 +42,7 @@ class CustomDataset(Dataset):
     def get_labels(self):   
         return self.labels
 
-class CodeBERTFineTuner(L.LightningModule):
+class FineTuner(L.LightningModule):
     # Replace model name with actual model name
     def __init__(self,iteration, fold,model_name="Salesforce/codet5-base", num_labels=2, learning_rate=2e-7):
         super().__init__()
@@ -157,7 +156,7 @@ for iteration in range(3):
         test_dataset = CustomDataset(texts, labels, tokenizer)
         test_dataloader = DataLoader(test_dataset, batch_size=50, shuffle=False)
 
-        model = CodeBERTFineTuner(iteration,fold)
+        model = FineTuner(iteration,fold)
         # The important one here is max_epochs should be 10, but the number of
         # GPUs can be different depending on your needs
         trainer =Trainer(max_epochs=10, devices=4,accelerator="gpu",strategy="deepspeed_stage_2", precision=16, logger=wandb_logger)
