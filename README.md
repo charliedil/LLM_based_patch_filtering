@@ -16,8 +16,8 @@ If using GPT, please insert OpenAI API key in api_keys.py
 1. Create virtual environment. We use Python 3.11
 2. Activate virtual environment
 3. Install dependencies. With pip it's ```pip install -r requirements.txt```
-4. Download necessary datasets
-   * (TODO: Link datasets. Wouldve done this myself, but wasn't sure how to anonymously upload them)
+4. Download [necessary datasets](https://drive.google.com/drive/folders/1lsVoGPOymIGkuKgi50UnGyvviglZ3Mrf?usp=sharing). Unfiltered MSR data used can be found [here (train)](https://drive.google.com/uc?id=1ldXyFvHG41VMrm260cK_JEPYqeb6e6Yw) and [here (val)](https://drive.google.com/uc?id=1yggncqivMcP0tzbh8-8Eu02Edwcs44WZ)
+
 ## Replicating RQ1
 For Llama, start a session of Llama. In the command line you can specify the endpoint like so
 ```
