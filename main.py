@@ -1,6 +1,7 @@
 from exp import zeroshot_prompting, mod_gen_knowledge_prompting, mod_fewshot_prompting, mod_cot_prompting
 from llm.llama import llama
 from llm.gpt import gpt
+from llm.deepseek import deepseek
 from scorer import score
 import sys
 import pandas as pd
@@ -12,7 +13,7 @@ def main():
     parser.add_argument("inp", help="input file. If preprocess is true, thsi should be the original data. if not, this should be the processed data file")
     parser.add_argument("out", help="output file")
     parser.add_argument("prompt", help="zeroshot, gen_know, cot, fewshot")
-    parser.add_argument("model", help="gpt or llama. If using codellama, specify llama")
+    parser.add_argument("model", help="gpt, llama, or deepseek. If using codellama, specify llama")
     parser.add_argument("rq", help="which rq are you running. IF 2, model should be gpt", type=int)
     parser.add_argument("-of", "--output_final", help="Final output file (required for RQ2, not used for RQ1)", type=str)
     parser.add_argument("-p", "--preprocess", action="store_true", help="Are we running on the original data? if this is true, inp will be the original data. otherwise it will be the processed data. if this is specified, preprocessing will be done on the original data to generate the new preprocessed input file first before prompting at all.")
@@ -39,8 +40,10 @@ def main():
         llm = llama(uri)
     elif model == "gpt":
         llm = gpt()
+    elif model == "deepseek":
+        llm =deepseek(uri)
     else:
-        print("Model should be gpt or llama.")
+        print("Model should be gpt, llama, or deepseek")
         exit(1)
     if rq==2:
         if model!="gpt":
@@ -92,8 +95,8 @@ def main():
                             thing2 = pd.DataFrame(rows, columns=header)
                             thing2.to_csv(out)
                         else:
-                            pred, summary, score =mod_gen_knowledge_prompting(llm, content, desc)
-                            rows.append([content, bugfix, pred, summary, score])
+                            pred, summary, scorea =mod_gen_knowledge_prompting(llm, content, desc)
+                            rows.append([content, bugfix, pred, summary, scorea])
                             thing2 = pd.DataFrame(rows, columns=header)
                             thing2.to_csv(out)
 
@@ -108,8 +111,8 @@ def main():
 
                 else:
                     try:
-                        pred, summary, score=mod_gen_knowledge_prompting(llm, content, desc)
-                        rows.append([content, bugfix, pred, summary,score])
+                        pred, summary, scorea=mod_gen_knowledge_prompting(llm, content, desc)
+                        rows.append([content, bugfix, pred, summary,scorea])
                         thing2 = pd.DataFrame(rows, columns=header)
                         thing2.to_csv(out)
 

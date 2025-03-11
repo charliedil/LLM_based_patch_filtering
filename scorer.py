@@ -4,8 +4,8 @@ def score(inp, out):
     #df = pd.read_csv("thing_modcot_out.csv")
     #df2 = pd.read_csv("thing.csv")
 
-    pred = list(inp["pred"].values)
-    gt = list(out["label"].values)
+    pred = list(out["pred"].values)
+    gt = list(inp["label"].values)
 
     assert len(pred)== len(gt)
 

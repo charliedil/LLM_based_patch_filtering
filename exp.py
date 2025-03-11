@@ -52,17 +52,16 @@ Knowledge:
 This hunk replaces the bitwise operation for file type checking in CPIO archives with a utility method call to CpioUtil.fileType(), addressing the IllegalArgumentException exceptions caused by non-zero file modes.
 """
     summaries = []
-    for i in range(1):#changed to 1 here for cost savings
+    for i in range(3):#changed to 1 here for cost savings
         history=[]
         history.append({"role":"system", "content":"Your job is to generate Knowledge for a given Hunk using the Description."})
         history.append({"role":"user", "content":fewshot_prompt_string+"\nDescription: "+desc+"\nHunk:\n"+content+"\nKnowledge:\n"})
-
         result, history = llm.run(history)
         summaries.append(result)
     max_ans = ""
     max_score = 0
     max_summary = 0
-    for i in range(1):#changed tro 1 here for cost savings
+    for i in range(3):#changed tro 1 here for cost savings
         flag = 0
         while(flag!=3):
             history = []
@@ -70,6 +69,7 @@ This hunk replaces the bitwise operation for file type checking in CPIO archives
             history.append({"role":"user", "content":"The following knowledge is derived from a code hunk that is part of a larger commit intended to fix the following bug. Code hunks that only contain changes to whitespace, documentation, tests are not bug fixes. Code hunks that perform refactoring or unrelated changes do not qualify as bugfixes. Using the knowledge given, determine if the code hunk contains a fix to the described bug.\nDescription: "+desc+"\nKnowledge: "+summaries[i]+"\n Please respond with \"yes\" or \"no\" and a confidence score on a scale from 0 to 1. Do not provide any more information or explanations. Format your response as follows: {\"ans\":<Answer>, \"conf\":<Confidence Score>}"})
             result, history = llm.run(history)
             try:
+                result = re.findall(r'\{[^{}]*\}', result)[0]
                 result_json = json.loads(result)
                 score = float(result_json["conf"])
                 answer = result_json["ans"].lower()
@@ -152,6 +152,7 @@ Hunk:
         history.append({"role":"user", "content":fewshot_prompt_string+"\nDescription: "+desc+"\nHunk:\n"+content})
         result, history = llm.run(history)
         try:
+            result = re.findall(r'\{[^{}]*\}', result)[0]
             result_json = json.loads(result)
             answer = result_json["ans"].lower()
             if answer in ["yes", "no"]:
@@ -187,6 +188,7 @@ def zeroshot_prompting(llm, content, desc):
  
         result, history = llm.run(history)
         try:
+            result = re.findall(r'\{[^{}]*\}', result)[0]
             result_json = json.loads(result)
             answer = result_json["ans"].lower()
             if answer in ["yes", "no"]:
