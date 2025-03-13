@@ -37,7 +37,7 @@ python main.py 0 smartshark.csv output.csv gen_know gpt 1
 ```
 Output will be the outputfile specified and metrics to the console. Consider submitting a SBATCH job, this will take a while.
 
-For DeepSeek, host a session of deepseek and specify the endpoint like you would with Llama. Also, instead of setting the model parameter to Llama, please set it to deepseek
+For DeepSeek, host a session of DeepSeek and specify the endpoint like you would with Llama. Also, instead of setting the model parameter to Llama, please set it to deepseek
 
 ```
 python main.py http://whatever-your-uri-is smartshark.csv output.csv gen_know deepseek 1
