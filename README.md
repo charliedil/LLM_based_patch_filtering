@@ -31,10 +31,18 @@ Where:
   * llama is the model (refers to any llama)
   * 1 is the RQ
 GPT-4o is very similar. The main difference is you don't need to specify the endpoint. You still need to provide something, as it is a required argument. Just put a 0. Also, say gpt instead of llama for the model.
+
 ```
 python main.py 0 smartshark.csv output.csv gen_know gpt 1
 ```
 Output will be the outputfile specified and metrics to the console. Consider submitting a SBATCH job, this will take a while.
+
+For DeepSeek, host a session of deepseek and specify the endpoint like you would with Llama. Also, instead of setting the model parameter to Llama, please set it to deepseek
+
+```
+python main.py http://whatever-your-uri-is smartshark.csv output.csv gen_know deepseek 1
+```
+We used [vllm](https://docs.vllm.ai/en/latest/getting_started/quickstart.html) to host deepseek. 
 
 ## Replicating RQ2
 Currently, RQ2 code is only tested with GPT and generated knowledge prompting, as this was the best combination from RQ1.
